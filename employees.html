@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Сотрудники</title>
+<style>
+    body { font-family: Arial; background: #f4f6f8; padding: 20px; }
+    .container { max-width: 900px; margin: auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; min-width: 600px; }
+    th, td { padding: 10px; border-bottom: 1px solid #ddd; text-align: left; font-size: 16px; }
+    th { background: #f0f0f0; }
+</style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Список сотрудников</h2>
+    <table id="employeeTable">
+        <thead>
+            <tr>
+                <th>ФИО</th>
+                <th>Логин</th>
+                <th>Пароль</th>
+                <th>Роль</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+<script>
+    const firebaseConfig = {
+        databaseURL: "https://taskmanagerapp-519de-default-rtdb.firebaseio.com" // Вставь сюда ссылку на твою Realtime Database
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    const tbody = document.querySelector('#employeeTable tbody');
+
+    // Слушаем изменения в реальном времени
+    db.ref('employees').on('value', snapshot => {
+        tbody.innerHTML = '';
+        const employees = snapshot.val();
+        for (let key in employees) {
+            const emp = employees[key];
+            tbody.innerHTML += `
+                <tr>
+                    <td>${emp.fullName}</td>
+                    <td>${emp.username}</td>
+                    <td>${emp.password}</td>
+                    <td>${emp.role}</td>
+                </tr>
+            `;
+        }
+    });
+</script>
+
+</body>
+</html>
